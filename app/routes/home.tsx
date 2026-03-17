@@ -18,9 +18,10 @@ export default function Home() {
    const {isLoading, auth} = usePuterStore();
     const navigate = useNavigate();
 
+    
     useEffect(() =>{
     if (!isLoading && !auth.isAuthenticated) {
-      navigate("/auth?next=/home", { replace: true });
+  navigate("/auth?next=/", { replace: true });
         }
   },[auth.isAuthenticated, isLoading, navigate]
 
