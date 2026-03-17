@@ -3,6 +3,9 @@ import NavBar from "~/components/Nav-bar";
 import ResumeCard from "~/components/Resume-card";
 import { resumes } from "../../constants";
 import bgMain from "~/images/bg-main.svg";
+import { usePuterStore } from "~/lib/puter";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -12,13 +15,23 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
+   const {isLoading, auth} = usePuterStore();
+    const navigate = useNavigate();
+
+    useEffect(() =>{
+    if (!isLoading && !auth.isAuthenticated) {
+      navigate("/auth?next=/home", { replace: true });
+        }
+  },[auth.isAuthenticated, isLoading, navigate]
+
+    )
   return (
     <main
       className="bg-cover bg-center min-h-screen"
       style={{ backgroundImage: `url(${bgMain})` }}
     >
       <NavBar />
-
+      {/* {window.puter.ai.chat()} */}
       <section className="main-section">
         <div className="page-heading">
           <h1>Track your Application & Resume analysis</h1>
