@@ -2,16 +2,15 @@ import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import uploadIcon from "../assets/icons/upload2.png";
 import pdfIcon from "../images/pdf.png";
+import cancelIcone from "../assets/icons/cancel.png";
 
 interface FileUploaderProps {
     onFileSelected: (file: File | null) => void;
 }
 
 const Style = {
-    fontSize: "0.875rem",
-    color: "#6B7280",
-    fontWeight: "400",
-    border: "1px solid #E5E7EB",
+    border: "none",
+    cursor: "pointer",
     borderRadius: "0.375rem",
     padding: "0.5rem 1rem",
     backgroundColor: "#ffffffb5",
@@ -80,7 +79,9 @@ const FileUploader = ({ onFileSelected }: FileUploaderProps) => {
                     setFile(null)
                     e.preventDefault();
                     onFileSelected(null);
-                }} className="flex items-center justify-center gap-2 " style={Style}>Remove Pdf</button>
+                }} className="flex items-center justify-center gap-2 " style={Style}>
+                    <img src={cancelIcone} alt="Cancel" className="w-5 h-5" />
+                </button>
            </div>
         ) : (
             <div>
