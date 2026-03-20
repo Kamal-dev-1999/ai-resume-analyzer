@@ -1,17 +1,21 @@
-import { useEffect, useState,useCallback } from "react";
+import { type FormEvent, useState } from "react";
 import bgMain from "~/images/bg-main.svg";
 import resumeScanGif from "~/images/resume-scan.gif";
 import NavBar  from "~/components/Nav-bar";
 import FileUploader from "~/components/Uploader"
-import {useDropzone} from 'react-dropzone'
 
 const Upload =() => {
 
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [statusText, setStatusText] = useState("");
+    const [isProcessing] = useState(false);
+    const [statusText] = useState("");
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+    };
+    const [file, setFile] = useState<File | null>(null);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {}
-
+    const handleFileSelected = (file: File | null) => {
+        setFile(file);
+    }
 
 
     return (
@@ -41,7 +45,7 @@ const Upload =() => {
                         </div>
                          <div className="form-div">
                             <label htmlFor="job-name">Job Title</label>
-                            <input type="text" name="job-name" id="job-title" placeholder="Enter job title" required/>
+                            <input type="text" name="job-name" id="job-name" placeholder="Enter job title" required/>
 
                         </div>
                          <div className="form-div">
@@ -50,9 +54,9 @@ const Upload =() => {
                         </div>
                          <div className="form-div">
                             <label htmlFor="uploader">Upload resume</label>
-                            <FileUploader />
+                            <FileUploader onFileSelected={handleFileSelected} />
                         </div>
-                        <button type="submit" className="primary-button">Analyze Resume</button>
+                        <button type="submit" className="primary-button" disabled={!file}>Analyze Resume</button>
                     </form>
                 )
             }
