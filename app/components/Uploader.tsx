@@ -7,9 +7,17 @@ interface FileUploaderProps {
     onFileSelected: (file: File | null) => void;
 }
 
+const Style = {
+    fontSize: "0.875rem",
+    color: "#6B7280",
+    fontWeight: "400",
+    border: "1px solid #E5E7EB",
+    borderRadius: "0.375rem",
+    padding: "0.5rem 1rem",
+    backgroundColor: "#ffffffb5",
+}
 const formatSize = (bytes: number): string => {
     if (bytes < 1024) return `${bytes} B`;
-
     const units = ["KB", "MB", "GB", "TB"];
     let size = bytes / 1024;
     let unitIndex = 0;
@@ -53,7 +61,7 @@ const FileUploader = ({ onFileSelected }: FileUploaderProps) => {
          )}
 
         {file ? (
-           <div className="uploader-selected-file" onclick={(e) => {
+           <div className="uploader-selected-file" onClick={(e) => {
             e.preventDefault();
             setFile(null);
             onFileSelected(null);
@@ -66,7 +74,13 @@ const FileUploader = ({ onFileSelected }: FileUploaderProps) => {
                     </p>
                     <p className="text-lg text-gray-500">{formatSize(file.size)}</p>
                 </div>
+                
             </div>
+            <button onClick={(e) =>{
+                    setFile(null)
+                    e.preventDefault();
+                    onFileSelected(null);
+                }} className="flex items-center justify-center gap-2 " style={Style}>Remove Pdf</button>
            </div>
         ) : (
             <div>
