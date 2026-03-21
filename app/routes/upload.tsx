@@ -5,17 +5,14 @@ import NavBar  from "~/components/Nav-bar";
 import FileUploader from "~/components/Uploader"
 import  {usePuterStore } from "~/lib/puter";
 import { convertPdfToImage } from "~/lib/pdf2img";
-import { resume } from "react-dom/server";
-
+import { prepareInstructions } from "../../constants/index";
 
 const Upload =() => {
     // here we are using the puter store to get the auth state, loading state, fs, ai and kv instances. We will use these to upload the file, analyze it and store the results.
     // ai - to call the ai functions
     // fs - to upload the file and get the url
     // kv - to store the results of the analysis
-    const fs = usePuterStore((s) => s.fs);
-
-
+    const {auth,isLoading,fs,ai,kv} = usePuterStore();
     const [isProcessing,setProcessing] = useState(false);
     const [statusText, setStatusText] = useState("");
     const [file, setFile] = useState<File | null>(null);
@@ -64,6 +61,25 @@ const Upload =() => {
                 jobDescription: jobDescription,
                 feedback: ""
             }
+            await kv.set(`resume-analysis-${uuid}`, JSON.stringify(data));
+            setStatusText("Analyzing with AI...")
+            
+            const feedback = await ai.feedback(
+            uploadedFile.path,
+            prepareInstructions({jobTitle, jobDescription})
+            ); 
+            console.log({feedback});
+            if (!feedback) {
+                return setStatusText("Failed to get feedback from AI. Please try again.");      
+            } 
+
+            const feedbackData = typeof feedback.message.content === "string" ? feedback.message.content : feedback.message.content[0];
+
+            data.feedback = JSON.stringify(feedbackData);
+            await kv.set(`resume-analysis-${uuid}`, JSON.stringify(data));
+            setStatusText("Analysis complete! You can view your feedback in the history section.");
+            console.log("Final data stored in KV:", data);
+
         } catch (error) {
             console.error(error);
             alert("Something went wrong while analyzing your resume. Please try again.");
@@ -73,10 +89,10 @@ const Upload =() => {
     }
 
 
-     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         // prevent reload of the screen
         e.preventDefault();
-          const form = e.currentTarget;
+        const form = e.currentTarget;
         const formData = new FormData(form);
 
         const companyName = formData.get("company-name") as string;
