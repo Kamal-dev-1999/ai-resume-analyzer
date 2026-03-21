@@ -3,7 +3,7 @@ import backIon from "../assets/icons/back.png";
 import { useEffect, useState } from "react";
 import { usePuterStore } from "../lib/puter";
 import smallBackground from "../images/bg-small.svg";
-
+import resumeScan from "../images/resume-scan-2.gif";
 
 
 export const meta = ()=>(
@@ -78,6 +78,16 @@ const Resume =() => {
                 </div>
               )
             }
+            </section>
+            <section className="feedback-section">
+                <h2 className="text-4xl text-black font-bold">Resume Review</h2>
+                {feedback ? (
+                    <div className="flex flex-col gap-5 ">
+                        Summary ATS Details
+                    </div>
+                ): (
+                    <img src={resumeScan} alt="Resume Scan" className="w-full"/>
+                )}
             </section>
             </div>
         </main>
