@@ -6,6 +6,7 @@ import FileUploader from "~/components/Uploader"
 import  {usePuterStore } from "~/lib/puter";
 import { convertPdfToImage } from "~/lib/pdf2img";
 import { prepareInstructions } from "../../constants/index";
+import { useNavigate } from "react-router";
 
 const Upload =() => {
     // here we are using the puter store to get the auth state, loading state, fs, ai and kv instances. We will use these to upload the file, analyze it and store the results.
@@ -16,6 +17,28 @@ const Upload =() => {
     const [isProcessing,setProcessing] = useState(false);
     const [statusText, setStatusText] = useState("");
     const [file, setFile] = useState<File | null>(null);
+    const navigate = useNavigate();
+
+    const getFeedbackContent = (feedback: unknown): string | null => {
+        if (typeof feedback === "string") return feedback;
+        if (!feedback || typeof feedback !== "object") return null;
+
+        const message = (feedback as { message?: { content?: unknown } }).message;
+        const content = message?.content;
+
+        if (typeof content === "string") return content;
+
+        if (Array.isArray(content)) {
+            const first = content[0];
+            if (typeof first === "string") return first;
+            if (first && typeof first === "object" && "text" in first) {
+                const text = (first as { text?: unknown }).text;
+                return typeof text === "string" ? text : null;
+            }
+        }
+
+        return null;
+    };
 
     const handleFileSelected = (file: File | null) => {
         setFile(file);
@@ -73,12 +96,18 @@ const Upload =() => {
                 return setStatusText("Failed to get feedback from AI. Please try again.");      
             } 
 
-            const feedbackData = typeof feedback.message.content === "string" ? feedback.message.content : feedback.message.content[0];
+            const feedbackData = getFeedbackContent(feedback);
+            if (!feedbackData) {
+                console.error("Unexpected AI feedback format", feedback);
+                return setStatusText("Received an unexpected AI response format. Please try again.");
+            }
 
             data.feedback = JSON.stringify(feedbackData);
             await kv.set(`resume-analysis-${uuid}`, JSON.stringify(data));
             setStatusText("Analysis complete! You can view your feedback in the history section.");
-            console.log("Final data stored in KV:", data);
+
+            navigate(`/resume/${uuid}`);
+            // console.log("Final data stored in KV:", data);
 
         } catch (error) {
             console.error(error);
