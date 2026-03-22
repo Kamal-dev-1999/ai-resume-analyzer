@@ -1,5 +1,4 @@
 import { Link, useParams } from "react-router";
-import backIon from "../assets/icons/back.png";
 import { useEffect, useState } from "react";
 import { usePuterStore } from "../lib/puter";
 import smallBackground from "../images/bg-small.svg";
@@ -98,27 +97,116 @@ const Resume =() => {
         };
     }, [fs, id, kv]);
 
+    const overallScore = feedback?.overallScore ?? null;
+    const scoreColor =
+        overallScore === null ? "#94a3b8"
+        : overallScore > 69   ? "#10b981"
+        : overallScore > 49   ? "#f59e0b"
+        :                        "#ef4444";
+    const scoreLabel =
+        overallScore === null ? "—"
+        : overallScore > 69   ? "Strong"
+        : overallScore > 49   ? "Good"
+        :                        "Needs Work";
+
     return (
         <main className="!pt-0 flex flex-col min-h-screen" style={{ background: "var(--color-surface-2)" }}>
-            {/* Sticky Navbar */}
-            <nav className="resume-nav">
-                <Link to="/" className="back-button">
-                    <img src={backIon} alt="back" className="w-4 h-4 opacity-60" />
-                    <span>Back to Homepage</span>
+
+            {/* ── Navbar ── */}
+            <nav className="resume-nav" style={{ position: "relative" }}>
+
+                {/* LEFT — Brand */}
+                <Link to="/" className="nav-brand">
+                    <div className="nav-brand-dot" aria-hidden="true">
+                        {/* Mini "R" icon */}
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <text x="2" y="13" fontSize="13" fontWeight="700" fill="white" fontFamily="sans-serif">R</text>
+                        </svg>
+                    </div>
+                    <span className="nav-brand-name">ResuMind</span>
                 </Link>
-                <div className="flex items-center gap-2">
+
+                {/* CENTER — Breadcrumb (hidden on small screens) */}
+                <div className="nav-breadcrumb">
+                    <Link
+                        to="/"
+                        className="text-sm transition-colors duration-150"
+                        style={{ color: "var(--color-text-muted)" }}
+                        onMouseEnter={e => (e.currentTarget.style.color = "var(--color-text-secondary)")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "var(--color-text-muted)")}
+                    >
+                        Home
+                    </Link>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="opacity-30">
+                        <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                     <span
-                        className="text-sm font-semibold tracking-tight"
+                        className="text-sm font-semibold"
                         style={{ color: "var(--color-text-primary)" }}
                     >
-                        ResuMind
+                        Resume Review
                     </span>
-                    <span
-                        className="text-xs px-2 py-0.5 rounded-full font-medium"
-                        style={{ background: "var(--color-accent-blue-light)", color: "var(--color-accent-blue)" }}
+                </div>
+
+                {/* RIGHT — Actions */}
+                <div className="flex flex-row items-center gap-2 flex-shrink-0">
+
+                    {/* Score chip — shows live score once loaded */}
+                    <div
+                        className="hidden sm:flex flex-row items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-500"
+                        style={{
+                            background: overallScore === null ? "#f1f5f9" : `${scoreColor}18`,
+                            color: scoreColor,
+                            border: `1px solid ${scoreColor}30`,
+                        }}
+                        title="Overall resume score"
                     >
-                        Review
-                    </span>
+                        <span
+                            className="inline-block w-1.5 h-1.5 rounded-full"
+                            style={{
+                                background: scoreColor,
+                                boxShadow: overallScore !== null ? `0 0 6px ${scoreColor}` : "none",
+                            }}
+                        />
+                        {overallScore !== null ? (
+                            <>{overallScore}/100 &middot; {scoreLabel}</>
+                        ) : (
+                            <>Analyzing…</>
+                        )}
+                    </div>
+
+                    {/* Download / open PDF button — only when PDF is ready */}
+                    {resumeUrl && (
+                        <a
+                            href={resumeUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex flex-row items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200"
+                            style={{
+                                background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
+                                color: "#fff",
+                                boxShadow: "0 2px 8px rgba(99,102,241,0.3)",
+                                textDecoration: "none",
+                            }}
+                            title="Open resume PDF"
+                        >
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="opacity-90">
+                                <path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                            <span className="hidden sm:inline">Open PDF</span>
+                        </a>
+                    )}
+
+                    {/* Back button (mobile — shows only icon when breadcrumb is hidden) */}
+                    <Link
+                        to="/"
+                        className="nav-back-button md:hidden"
+                        title="Back to home"
+                    >
+                        <svg className="nav-back-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M10 13L5 8l5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </Link>
                 </div>
             </nav>
 
