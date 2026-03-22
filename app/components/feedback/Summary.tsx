@@ -1,47 +1,35 @@
 import ScoreGauge from "./ScoreGage";
 
-const ScoreBadge = ({ score }: { score: number }) => {
-  const badgeColor =
-    score > 69
-      ? "bg-badge-green"
-      : score > 49
-      ? "bg-badge-yellow"
-      : "bg-badge-red";
-  const textColor =
-    score > 69
-      ? "text-green-600"
-      : score > 49
-      ? "text-yellow-600"
-      : "text-red-600";
-  const badgeText =
-    score > 69 ? "Strong" : score > 49 ? "Good Start" : "Needs Work";
-
-  return (
-    <div className={`score-badge ${badgeColor}`}>
-      <p className={`text-xs ${textColor} font-semibold`}>{badgeText}</p>
-    </div>
-  );
+const getScoreLabel = (score: number) => {
+  if (score > 69) return { label: "Strong", cls: "good" };
+  if (score > 49) return { label: "Good Start", cls: "mid" };
+  return { label: "Needs Work", cls: "low" };
 };
 
-const Category = ({ title, score }: { title: string; score: number }) => {
-  const textColor =
-    score > 69
-      ? "text-green-600"
-      : score > 49
-      ? "text-yellow-600"
-      : "text-red-600";
+const getScoreColor = (score: number) => {
+  if (score > 69) return "#10b981";
+  if (score > 49) return "#f59e0b";
+  return "#ef4444";
+};
+
+const CategoryRow = ({ title, score }: { title: string; score: number }) => {
+  const { label, cls } = getScoreLabel(score);
+  const scoreColor = getScoreColor(score);
 
   return (
-    <div className="resume-summary">
-      <div className="category">
-        <div className="flex flex-row gap-2 items-center justify-center">
-          <p className="text-2xl">{title}</p>
-          <ScoreBadge score={score} />
-        </div>
-        <p className="text-2xl ">
-          <span className={textColor}>{score}</span>/100
+    <div className="category-row">
+      <div className="flex flex-row items-center gap-3">
+        <p className="font-semibold text-base" style={{ color: "var(--color-text-primary)" }}>
+          {title}
         </p>
+        <span className={`status-badge ${cls}`}>{label}</span>
       </div>
+      <p className="text-base font-bold tabular-nums" style={{ color: scoreColor }}>
+        {score}
+        <span className="text-sm font-normal" style={{ color: "var(--color-text-muted)" }}>
+          /100
+        </span>
+      </p>
     </div>
   );
 };
@@ -52,22 +40,33 @@ const Summary = ({ feedback }: { feedback: Feedback | null }) => {
   const contentScore = feedback?.content?.score || 0;
   const structureScore = feedback?.structure?.score || 0;
   const skillsScore = feedback?.skills?.score || 0;
+  const { label, cls } = getScoreLabel(overallScore);
 
   return (
-    <div className="bg-white rounded-2xl shadow-md w-full">
-      <div className="flex flex-row max-sm:flex-col  items-center p-4 gap-8">
+    <div className="resume-score-card">
+      {/* Score header */}
+      <div className="flex flex-row max-sm:flex-col items-center gap-5 pb-5 border-b" style={{ borderColor: "var(--color-border)" }}>
         <ScoreGauge score={overallScore} />
-        <div className="flex flex-col gap-2">
-          <h2 className="text-2xl font-bold">Your Resume Score</h2>
-          <p className="text-sm text-gray-500">
-            This score is calculated based on the variables listed below.
+        <div className="flex flex-col gap-1">
+          <div className="flex flex-row items-center gap-2">
+            <h2 className="text-lg font-bold" style={{ color: "var(--color-text-primary)" }}>
+              Your Resume Score
+            </h2>
+            <span className={`status-badge ${cls}`}>{label}</span>
+          </div>
+          <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+            Score calculated across tone, content, structure & skills.
           </p>
         </div>
       </div>
-      <Category title="Tone & Style" score={toneAndStyleScore} />
-      <Category title="Content" score={contentScore} />
-      <Category title="Structure" score={structureScore} />
-      <Category title="Skills" score={skillsScore} />
+
+      {/* Category breakdown */}
+      <div className="flex flex-col gap-3 pt-4">
+        <CategoryRow title="Tone & Style" score={toneAndStyleScore} />
+        <CategoryRow title="Content"      score={contentScore} />
+        <CategoryRow title="Structure"    score={structureScore} />
+        <CategoryRow title="Skills"       score={skillsScore} />
+      </div>
     </div>
   );
 };

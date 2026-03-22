@@ -16,6 +16,21 @@
   --color-badge-green-text: #254d4a;
   --color-badge-red-text: #752522;
   --color-badge-yellow-text: #73321b;
+
+  /* Resume page design tokens */
+  --color-surface: #ffffff;
+  --color-surface-2: #f8faff;
+  --color-border: #e4eaf5;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #64748b;
+  --color-text-muted: #94a3b8;
+  --color-sidebar-bg: #0c0e1a;
+  --color-sidebar-border: #1e2235;
+  --color-accent-blue: #6366f1;
+  --color-accent-blue-light: #eef2ff;
+  --color-score-good: #10b981;
+  --color-score-mid: #f59e0b;
+  --color-score-low: #ef4444;
 }
 
 html,
@@ -60,16 +75,25 @@ form {
     @apply primary-gradient text-white rounded-full px-4 py-2 cursor-pointer w-full;
   }
   .resume-nav {
-    @apply flex flex-row justify-between items-center p-4 border-b border-gray-200;
+    @apply flex flex-row justify-between items-center px-6 py-3.5 border-b sticky top-0 z-50 bg-white/90 backdrop-blur-md;
+    border-color: var(--color-border);
+  }
+  .back-button {
+    @apply flex flex-row items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    &:hover {
+      background: var(--color-surface-2);
+      color: var(--color-text-primary);
+      transform: translateX(-2px);
+    }
   }
   .resume-summary {
     @apply flex flex-row items-center justify-center p-4 gap-4;
     .category {
       @apply flex flex-row gap-2 items-center bg-gray-50 rounded-2xl p-4 w-full justify-between;
     }
-  }
-  .back-button {
-    @apply flex flex-row items-center gap-2 border border-gray-200 rounded-lg p-2 shadow-sm;
   }
   .auth-button {
     @apply primary-gradient rounded-full py-4 px-8 cursor-pointer w-[600px] max-md:w-full text-3xl font-semibold text-white;
@@ -107,7 +131,16 @@ form {
   }
 
   .feedback-section {
-    @apply flex flex-col gap-8 w-1/2 px-8 max-lg:w-full py-6;
+    @apply flex flex-col gap-6 w-1/2 max-lg:w-full py-8;
+  }
+  .feedback-section.resume-panel {
+    @apply px-6 lg:px-10;
+    background: var(--color-sidebar-bg);
+  }
+  .feedback-section.review-panel {
+    @apply px-6 lg:px-10 overflow-y-auto;
+    background: var(--color-surface-2);
+    max-height: 100vh;
   }
 
   .navbar {
@@ -163,4 +196,217 @@ form {
   to {
     opacity: 1;
   }
+}
+
+/* =============================================
+   RESUME PAGE — PREMIUM REDESIGN
+   ============================================= */
+
+/* Score card */
+.resume-score-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(99,102,241,0.06);
+}
+
+/* Category row in Summary */
+.category-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.category-row:hover {
+  box-shadow: 0 4px 16px rgba(99,102,241,0.10);
+  transform: translateY(-1px);
+}
+
+/* ATS card */
+.ats-card {
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid;
+  position: relative;
+  overflow: hidden;
+}
+.ats-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  pointer-events: none;
+}
+.ats-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+/* Accordion redesign */
+.accordion-item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border) !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.accordion-item:hover {
+  box-shadow: 0 4px 20px rgba(99,102,241,0.08);
+}
+.accordion-header-btn {
+  width: 100%;
+  padding: 18px 20px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+  transition: background 0.2s;
+}
+.accordion-header-btn:hover {
+  background: var(--color-surface-2);
+}
+
+/* Tip chips grid */
+.tip-chips {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 16px;
+  background: var(--color-surface-2);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+@media (max-width: 600px) {
+  .tip-chips {
+    grid-template-columns: 1fr;
+  }
+}
+.tip-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+.tip-chip.good { background: #ecfdf5; color: #065f46; }
+.tip-chip.improve { background: #fffbeb; color: #78350f; }
+
+/* Explanation cards */
+.tip-explanation {
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.tip-explanation.good {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #065f46;
+}
+.tip-explanation.improve {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #78350f;
+}
+.tip-explanation-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Score pill */
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.score-pill.good { background: #d1fae5; color: #065f46; }
+.score-pill.mid  { background: #fef9c3; color: #78350f; }
+.score-pill.low  { background: #fee2e2; color: #7f1d1d; }
+
+/* Status badge (Needs Work / Strong) */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.status-badge.good   { background: #d1fae5; color: #065f46; }
+.status-badge.mid    { background: #fef9c3; color: #92400e; }
+.status-badge.low    { background: #fee2e2; color: #991b1b; }
+
+/* Sticky left panel containing resume preview */
+.resume-preview-panel {
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Resume review right panel scrollable */
+.review-scroll-panel {
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+.review-scroll-panel::-webkit-scrollbar { width: 6px; }
+.review-scroll-panel::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 99px; }
+
+/* Resume image wrapper */
+.resume-img-wrapper {
+  width: 100%;
+  max-width: 480px;
+  padding: 20px;
+}
+
+/* Page section title */
+.review-page-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.5px;
+}
+
+/* Loading scan gif */
+.scan-loading {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 20px;
+  opacity: 0.85;
 }

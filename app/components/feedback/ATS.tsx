@@ -1,6 +1,33 @@
 import { cn } from "~/lib/utils";
 import PointerMark from "./PointerMark";
 
+const getAtsStyle = (score: number) => {
+  if (score > 69) return {
+    cardBorder: "#bbf7d0",
+    cardBg: "linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%)",
+    badgeBg: "#dcfce7",
+    badgeText: "#15803d",
+    badgeBorder: "#86efac",
+    titleColor: "#14532d",
+  };
+  if (score > 49) return {
+    cardBorder: "#fde68a",
+    cardBg: "linear-gradient(135deg, #fffbeb 0%, #ffffff 100%)",
+    badgeBg: "#fef9c3",
+    badgeText: "#a16207",
+    badgeBorder: "#fde047",
+    titleColor: "#78350f",
+  };
+  return {
+    cardBorder: "#fecaca",
+    cardBg: "linear-gradient(135deg, #fff1f2 0%, #ffffff 100%)",
+    badgeBg: "#fee2e2",
+    badgeText: "#b91c1c",
+    badgeBorder: "#fca5a5",
+    titleColor: "#7f1d1d",
+  };
+};
+
 const ATS = ({
   score,
   suggestions,
@@ -8,51 +35,64 @@ const ATS = ({
   score: number;
   suggestions: { type: "good" | "improve"; tip: string }[];
 }) => {
+  const style = getAtsStyle(score);
+
   return (
     <div
-      className={cn(
-        "rounded-2xl shadow-md w-full bg-gradient-to-b to-light-white p-8 flex flex-col gap-4",
-        score > 69
-          ? "from-green-100"
-          : score > 49
-          ? "from-yellow-100"
-          : "from-red-100"
-      )}
+      className="ats-card"
+      style={{
+        border: `1px solid ${style.cardBorder}`,
+        background: style.cardBg,
+      }}
     >
-      <div className="flex flex-row gap-4 items-center">
+      {/* Header */}
+      <div className="flex flex-row items-center gap-3 mb-4">
         <div
-          className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border",
-            score > 69
-              ? "bg-green-100 text-green-700 border-green-300"
-              : score > 49
-              ? "bg-yellow-100 text-yellow-700 border-yellow-300"
-              : "bg-red-100 text-red-700 border-red-300"
-          )}
-          aria-label="ATS status"
+          className="ats-badge"
+          style={{
+            background: style.badgeBg,
+            color: style.badgeText,
+            border: `1px solid ${style.badgeBorder}`,
+          }}
         >
           ATS
         </div>
-        <p className="text-2xl font-semibold">ATS Score - {score}/100</p>
+        <div>
+          <p className="text-lg font-bold" style={{ color: style.titleColor }}>
+            ATS Score — {score}/100
+          </p>
+          <p className="text-xs font-medium" style={{ color: "var(--color-text-muted)" }}>
+            Applicant Tracking System compatibility
+          </p>
+        </div>
       </div>
+
+      {/* Description */}
+      <p className="text-sm mb-3 leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
+        How well does your resume pass through Applicant Tracking Systems? Here's how it performed:
+      </p>
+
+      {/* Suggestions */}
       <div className="flex flex-col gap-2">
-        <p className="font-medium text-xl">
-          How well does your resume pass through Applicant Tracking Systems?
-        </p>
-        <p className="text-lg text-gray-500">
-          Your resume was scanned like an employer would. Here's how it
-          performed:
-        </p>
         {suggestions.map((suggestion, index) => (
-          <div className="flex flex-row gap-2 items-center" key={index}>
-            <PointerMark tone={suggestion.type} />
-            <p className="text-lg text-gray-500">{suggestion.tip}</p>
+          <div
+            key={index}
+            className="flex flex-row gap-2.5 items-start"
+          >
+            <PointerMark tone={suggestion.type} className="mt-0.5 shrink-0" />
+            <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
+              {suggestion.tip}
+            </p>
           </div>
         ))}
-        <p className="text-lg text-gray-500">
-          Want a better score? Improve your resume by applying the suggestions
-          listed below.
-        </p>
+      </div>
+
+      {/* Footer CTA */}
+      <div
+        className="mt-4 pt-4 border-t text-sm"
+        style={{ borderColor: style.cardBorder, color: "var(--color-text-muted)" }}
+      >
+        💡 Want a better score? Apply the suggestions below to improve your ATS compatibility.
       </div>
     </div>
   );

@@ -5,33 +5,19 @@ import {
   AccordionHeader,
   AccordionItem,
 } from "../Accordion";
-import PointerMark from "./PointerMark";
 
-const ScoreBadge = ({ score }: { score: number }) => {
+const getScoreStyle = (score: number) => {
+  if (score > 69) return { cls: "good", label: "Strong", color: "#10b981" };
+  if (score > 39) return { cls: "mid", label: "Fair", color: "#f59e0b" };
+  return { cls: "low", label: "Needs Work", color: "#ef4444" };
+};
+
+const ScorePill = ({ score }: { score: number }) => {
+  const { cls, color } = getScoreStyle(score);
   return (
-    <div
-      className={cn(
-        "flex flex-row gap-1 items-center px-2 py-0.5 rounded-[96px]",
-        score > 69
-          ? "bg-badge-green"
-          : score > 39
-          ? "bg-badge-yellow"
-          : "bg-badge-red"
-      )}
-    >
-      <PointerMark tone={score > 69 ? "good" : "improve"} className="size-3.5" />
-      <p
-        className={cn(
-          "text-sm font-medium",
-          score > 69
-            ? "text-badge-green-text"
-            : score > 39
-            ? "text-badge-yellow-text"
-            : "text-badge-red-text"
-        )}
-      >
-        {score}/100
-      </p>
+    <div className={`score-pill ${cls}`}>
+      <span style={{ color }} className="text-xs">●</span>
+      {score}/100
     </div>
   );
 };
@@ -43,10 +29,14 @@ const CategoryHeader = ({
   title: string;
   categoryScore: number;
 }) => {
+  const { label, cls } = getScoreStyle(categoryScore);
   return (
-    <div className="flex flex-row gap-4 items-center py-2">
-      <p className="text-2xl font-semibold">{title}</p>
-      <ScoreBadge score={categoryScore} />
+    <div className="flex flex-row gap-3 items-center">
+      <p className="text-base font-semibold" style={{ color: "var(--color-text-primary)" }}>
+        {title}
+      </p>
+      <span className={`status-badge ${cls}`}>{label}</span>
+      <ScorePill score={categoryScore} />
     </div>
   );
 };
@@ -57,37 +47,26 @@ const CategoryContent = ({
   tips: { type: "good" | "improve"; tip: string; explanation: string }[];
 }) => {
   return (
-    <div className="flex flex-col gap-4 items-center w-full">
-      <div className="bg-gray-50 w-full rounded-lg px-5 py-4 grid grid-cols-2 gap-4">
+    <div className="flex flex-col gap-4">
+      {/* Tip chips summary grid */}
+      <div className="tip-chips">
         {tips.map((tip, index) => (
-          <div className="flex flex-row gap-2 items-center" key={index}>
-            <PointerMark tone={tip.type} />
-            <p className="text-xl text-gray-500 ">{tip.tip}</p>
+          <div key={index} className={`tip-chip ${tip.type}`}>
+            <span className="text-base leading-none">{tip.type === "good" ? "✓" : "→"}</span>
+            <span className="text-sm font-medium leading-snug">{tip.tip}</span>
           </div>
         ))}
       </div>
-      <div className="flex flex-col gap-4 w-full">
+
+      {/* Detailed explanations */}
+      <div className="flex flex-col gap-3">
         {tips.map((tip, index) => (
-          <div
-            key={index + tip.tip}
-            className={cn(
-              "flex flex-col gap-2 rounded-2xl p-4",
-              tip.type === "good"
-                ? "bg-green-50 border border-green-200 text-green-700"
-                : "bg-yellow-50 border border-yellow-200 text-yellow-700"
-            )}
-          >
-            <div className="flex flex-row gap-2 items-center">
-              <span
-                className={cn(
-                  "inline-block size-2.5 rounded-full",
-                  tip.type === "good" ? "bg-green-500" : "bg-yellow-500"
-                )}
-                aria-hidden="true"
-              />
-              <p className="text-xl font-semibold">{tip.tip}</p>
+          <div key={index + tip.tip} className={`tip-explanation ${tip.type}`}>
+            <div className="tip-explanation-title">
+              <span className="text-base">{tip.type === "good" ? "✅" : "⚠️"}</span>
+              {tip.tip}
             </div>
-            <p>{tip.explanation}</p>
+            <p className="text-sm leading-relaxed opacity-90">{tip.explanation}</p>
           </div>
         ))}
       </div>
@@ -100,9 +79,9 @@ const Details = ({ feedback }: { feedback: Feedback | null }) => {
     return null;
   }
   return (
-    <div className="flex flex-col gap-4 w-full">
-      <Accordion>
-        <AccordionItem id="tone-style">
+    <div className="flex flex-col gap-3 w-full">
+      <Accordion allowMultiple>
+        <AccordionItem id="tone-style" className="accordion-item">
           <AccordionHeader itemId="tone-style">
             <CategoryHeader
               title="Tone & Style"
@@ -113,7 +92,7 @@ const Details = ({ feedback }: { feedback: Feedback | null }) => {
             <CategoryContent tips={feedback.toneAndStyle.tips} />
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem id="content">
+        <AccordionItem id="content" className="accordion-item">
           <AccordionHeader itemId="content">
             <CategoryHeader
               title="Content"
@@ -124,7 +103,7 @@ const Details = ({ feedback }: { feedback: Feedback | null }) => {
             <CategoryContent tips={feedback.content.tips} />
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem id="structure">
+        <AccordionItem id="structure" className="accordion-item">
           <AccordionHeader itemId="structure">
             <CategoryHeader
               title="Structure"
@@ -135,7 +114,7 @@ const Details = ({ feedback }: { feedback: Feedback | null }) => {
             <CategoryContent tips={feedback.structure.tips} />
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem id="skills">
+        <AccordionItem id="skills" className="accordion-item">
           <AccordionHeader itemId="skills">
             <CategoryHeader
               title="Skills"

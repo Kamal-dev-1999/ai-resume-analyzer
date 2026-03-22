@@ -99,43 +99,113 @@ const Resume =() => {
     }, [fs, id, kv]);
 
     return (
-        <main className="!pt-0">
+        <main className="!pt-0 flex flex-col min-h-screen" style={{ background: "var(--color-surface-2)" }}>
+            {/* Sticky Navbar */}
             <nav className="resume-nav">
                 <Link to="/" className="back-button">
-                <img src={backIon} alt="logo" className="w-5 h-5" />
-                <span className="">Back to Homepage</span>
+                    <img src={backIon} alt="back" className="w-4 h-4 opacity-60" />
+                    <span>Back to Homepage</span>
                 </Link>
+                <div className="flex items-center gap-2">
+                    <span
+                        className="text-sm font-semibold tracking-tight"
+                        style={{ color: "var(--color-text-primary)" }}
+                    >
+                        ResuMind
+                    </span>
+                    <span
+                        className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{ background: "var(--color-accent-blue-light)", color: "var(--color-accent-blue)" }}
+                    >
+                        Review
+                    </span>
+                </div>
             </nav>
-            <div className="flex flex-row w-full max-lg:flex-col-reverse">
+
+            {/* Two-column layout */}
+            <div className="flex flex-row w-full flex-1 max-lg:flex-col-reverse">
+
+                {/* LEFT: Resume preview (sticky) */}
                 <section
-                    className="feedback-section bg-cover bg-center h-100vh sticky top-0 justify-center items-center flex"
+                    className="w-1/2 max-lg:w-full bg-cover bg-center"
                     style={{ backgroundImage: `url(${smallBackground})` }}
                 >
-                    {imageUrl && resumeUrl && (
-                        <div className="animate-in fade-in duration-1000 gradient-border max-sm:m-5">
-                            <a href={resumeUrl} target="_blank" rel="noreferrer">
-                                <img
-                                    src={imageUrl}
-                                    alt="Resume"
-                                    title="Resume"
-                                    className="w-full h-full object-contain rounded-2xl"
-                                />
-                            </a>
-                        </div>
-                    )}
-                </section>
-            <section className="feedback-section">
-                <h2 className="text-4xl text-black font-bold">Resume Review</h2>
-                {feedback ? (
-                    <div className="flex flex-col gap-5 ">
-                        <Summary feedback={feedback} />
-                        <ATS score={feedback.ATS.score} suggestions={feedback.ATS.tips} />
-                        <Details feedback={feedback} />
+                    <div className="resume-preview-panel max-lg:static max-lg:h-auto max-lg:py-8 max-lg:min-h-[300px]">
+                        {imageUrl && resumeUrl ? (
+                            <div className="animate-in fade-in duration-700 resume-img-wrapper">
+                                <a
+                                    href={resumeUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    title="Click to open PDF"
+                                    className="block group"
+                                >
+                                    <div
+                                        className="rounded-2xl overflow-hidden transition-all duration-300 group-hover:scale-[1.01]"
+                                        style={{
+                                            boxShadow: "0 20px 60px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.15)",
+                                            border: "1px solid rgba(255,255,255,0.12)",
+                                        }}
+                                    >
+                                        <img
+                                            src={imageUrl}
+                                            alt="Your Resume"
+                                            className="w-full h-full object-contain"
+                                        />
+                                    </div>
+                                    <p
+                                        className="text-center mt-3 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                        style={{ color: "var(--color-text-muted)" }}
+                                    >
+                                        Click to open PDF ↗
+                                    </p>
+                                </a>
+                            </div>
+                        ) : (
+                            <div className="resume-img-wrapper flex flex-col items-center gap-4">
+                                <img src={resumeScan} alt="Scanning resume…" className="scan-loading" />
+                                <p className="text-sm font-medium animate-pulse" style={{ color: "var(--color-text-muted)" }}>
+                                    Analyzing your resume…
+                                </p>
+                            </div>
+                        )}
                     </div>
-                ): (
-                    <img src={resumeScan} alt="Resume Scan" className="w-full"/>
-                )}
-            </section>
+                </section>
+
+                {/* RIGHT: Review panel */}
+                <section className="w-1/2 max-lg:w-full review-scroll-panel max-lg:h-auto">
+                    <div className="px-6 lg:px-10 py-8 flex flex-col gap-6 max-w-2xl mx-auto">
+                        {/* Header */}
+                        <div className="flex flex-col gap-1">
+                            <h2 className="review-page-title">Resume Review</h2>
+                            <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+                                AI-powered analysis of your resume
+                            </p>
+                        </div>
+
+                        {/* Feedback content */}
+                        {feedback ? (
+                            <div className="flex flex-col gap-5 animate-in fade-in duration-500">
+                                <Summary feedback={feedback} />
+                                <ATS score={feedback.ATS.score} suggestions={feedback.ATS.tips} />
+                                <Details feedback={feedback} />
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center gap-6 py-12">
+                                <img src={resumeScan} alt="Resume Scan" className="scan-loading" />
+                                <div className="text-center">
+                                    <p className="font-semibold text-base" style={{ color: "var(--color-text-primary)" }}>
+                                        Generating your review…
+                                    </p>
+                                    <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>
+                                        This usually takes 15–30 seconds
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
             </div>
         </main>
     )
