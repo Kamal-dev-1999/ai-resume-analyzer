@@ -93,20 +93,20 @@ export const resumes: Resume[] = [
       },
     },
   },
-    {
+  {
     id: "4",
-    companyName: "Google",
-    jobTitle: "Frontend Developer",
+    companyName: "Amazon",
+    jobTitle: "Backend Engineer",
     imagePath: resume01Image,
     resumePath: "../app/resumes/resume-1.pdf",
     feedback: {
-      overallScore: 85,
+      overallScore: 88,
       ATS: {
-        score: 90,
+        score: 92,
         tips: [],
       },
       toneAndStyle: {
-        score: 90,
+        score: 85,
         tips: [],
       },
       content: {
@@ -114,25 +114,25 @@ export const resumes: Resume[] = [
         tips: [],
       },
       structure: {
-        score: 90,
+        score: 88,
         tips: [],
       },
       skills: {
-        score: 90,
+        score: 85,
         tips: [],
       },
     },
   },
   {
     id: "5",
-    companyName: "Microsoft",
-    jobTitle: "Cloud Engineer",
+    companyName: "Netflix",
+    jobTitle: "Data Scientist",
     imagePath: resume02Image,
     resumePath: "../app/resumes/resume-2.pdf",
     feedback: {
-      overallScore: 55,
+      overallScore: 92,
       ATS: {
-        score: 90,
+        score: 95,
         tips: [],
       },
       toneAndStyle: {
@@ -140,45 +140,45 @@ export const resumes: Resume[] = [
         tips: [],
       },
       content: {
-        score: 90,
+        score: 92,
         tips: [],
       },
       structure: {
-        score: 90,
+        score: 88,
         tips: [],
       },
       skills: {
-        score: 90,
+        score: 96,
         tips: [],
       },
     },
   },
   {
     id: "6",
-    companyName: "Apple",
-    jobTitle: "iOS Developer",
+    companyName: "Meta",
+    jobTitle: "Fullstack Developer",
     imagePath: resume03Image,
     resumePath: "/resumes/resume-3.pdf",
     feedback: {
-      overallScore: 75,
+      overallScore: 82,
       ATS: {
-        score: 90,
+        score: 85,
         tips: [],
       },
       toneAndStyle: {
-        score: 90,
+        score: 80,
         tips: [],
       },
       content: {
-        score: 90,
+        score: 85,
         tips: [],
       },
       structure: {
-        score: 90,
+        score: 75,
         tips: [],
       },
       skills: {
-        score: 90,
+        score: 88,
         tips: [],
       },
     },

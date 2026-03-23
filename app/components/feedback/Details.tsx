@@ -31,12 +31,14 @@ const CategoryHeader = ({
 }) => {
   const { label, cls } = getScoreStyle(categoryScore);
   return (
-    <div className="flex flex-row gap-3 items-center">
-      <p className="text-base font-semibold" style={{ color: "var(--color-text-primary)" }}>
+    <div className="flex flex-col gap-1 min-w-0">
+      <p className="text-base font-semibold leading-snug" style={{ color: "var(--color-text-primary)" }}>
         {title}
       </p>
-      <span className={`status-badge ${cls}`}>{label}</span>
-      <ScorePill score={categoryScore} />
+      <div className="flex flex-row items-center gap-2 flex-wrap">
+        <span className={`status-badge ${cls}`}>{label}</span>
+        <ScorePill score={categoryScore} />
+      </div>
     </div>
   );
 };

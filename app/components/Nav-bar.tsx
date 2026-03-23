@@ -31,7 +31,7 @@ const NavBar: React.FC = () => {
   const initials = displayName.slice(0, 2).toUpperCase();
 
   return (
-    <nav className="navbar">
+    <nav className="navbar sticky">
       {/* Brand */}
       <Link to="/" className="nav-brand" style={{ textDecoration: "none" }}>
         <div className="nav-brand-dot" aria-hidden="true">

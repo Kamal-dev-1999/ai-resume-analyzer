@@ -45,17 +45,17 @@ const Summary = ({ feedback }: { feedback: Feedback | null }) => {
   return (
     <div className="resume-score-card">
       {/* Score header */}
-      <div className="flex flex-row max-sm:flex-col items-center gap-5 pb-5 border-b" style={{ borderColor: "var(--color-border)" }}>
+      <div className="flex flex-row max-sm:flex-col max-sm:items-center items-center gap-5 pb-5 border-b" style={{ borderColor: "var(--color-border)" }}>
         <ScoreGauge score={overallScore} />
-        <div className="flex flex-col gap-1">
-          <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-col gap-1 max-sm:items-center max-sm:text-center">
+          <div className="flex flex-row items-center gap-2 flex-wrap max-sm:justify-center">
             <h2 className="text-lg font-bold" style={{ color: "var(--color-text-primary)" }}>
               Your Resume Score
             </h2>
             <span className={`status-badge ${cls}`}>{label}</span>
           </div>
           <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-            Score calculated across tone, content, structure & skills.
+            Score calculated across tone, content, structure &amp; skills.
           </p>
         </div>
       </div>

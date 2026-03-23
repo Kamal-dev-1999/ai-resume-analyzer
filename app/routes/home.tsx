@@ -2,11 +2,10 @@ import type { Route } from "./+types/home";
 import NavBar from "~/components/Nav-bar";
 import ResumeCard from "~/components/Resume-card";
 import { resumes } from "../../constants";
-import bgMain from "~/images/bg-main.svg";
 import { usePuterStore } from "~/lib/puter";
 import { Link } from "react-router";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   return [
     { title: "ResuMind" },
     { name: "description", content: "AI-powered resume analysis and tracking." },
@@ -17,165 +16,125 @@ export default function Home() {
   const { isLoading, auth } = usePuterStore();
 
   return (
-    <main
-      className="bg-cover bg-center min-h-screen"
-      style={{ backgroundImage: `url(${bgMain})` }}
-    >
-      <NavBar />
+    <main className="relative min-h-screen overflow-hidden bg-[#fafafa]">
+      {/* Premium Animated Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-[#e0e7ff] to-[#f3e8ff] opacity-60 blur-[100px] animate-pulse-slow" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-gradient-to-tl from-[#ede9fe] to-[#f5f3ff] opacity-60 blur-[120px]" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEgMWgydjJIMUMxeiIgZmlsbD0iI2U4ZWFmNiIgZmlsbC1ydWxlPSJldmVub2RkIiBvcGFjaXR5PSIwLjMiLz48L3N2Zz4=')] opacity-70" />
+      </div>
 
-      {/* Hero section */}
-      <section className="main-section">
-        <div className="page-heading">
-          <h1>Track your Application &amp; Resume analysis</h1>
-          <h2>Get AI-Powered Resume Analysis</h2>
-        </div>
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <NavBar />
 
-        {/* Auth-aware CTA */}
-        <div className="flex flex-row flex-wrap gap-3 justify-center">
-          {isLoading ? (
-            /* Loading skeleton for CTA */
-            <div
-              className="h-14 w-56 rounded-full animate-pulse"
-              style={{ background: "rgba(255,255,255,0.3)" }}
-            />
-          ) : auth.isAuthenticated ? (
-            /* Logged-in: Upload CTA */
-            <Link
-              to="/upload"
-              className="flex items-center gap-2 px-8 py-4 rounded-full text-lg font-semibold transition-all duration-200"
-              style={{
-                background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
-                color: "#fff",
-                boxShadow: "0 4px 20px rgba(99,102,241,0.4)",
-                textDecoration: "none",
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M9 12V2M5 6l4-4 4 4M2 15h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-              Upload New Resume
-            </Link>
-          ) : (
-            /* Guest: Sign in prompt */
-            <>
+        {/* Hero Section */}
+        <section className="flex flex-col items-center justify-center pt-24 pb-20 px-6 sm:px-10 text-center mx-auto max-w-5xl">
+          
+          {/* Subtle Label Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 bg-white/60 border border-[#e2e8f0] shadow-sm backdrop-blur-md animate-in slide-in-from-bottom-4 fade-in duration-700">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6366f1] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#6366f1]"></span>
+            </span>
+            <span className="text-xs font-semibold text-[#475569] tracking-wide uppercase">AI-Powered Analysis</span>
+          </div>
+
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#0f172a] mb-6 leading-[1.15] animate-in slide-in-from-bottom-6 fade-in duration-700 delay-100">
+            Perfect your resume with <br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#8b5cf6] to-[#d946ef]">
+              intelligent insights
+            </span>
+          </h1>
+
+          <p className="text-lg sm:text-xl text-[#64748b] max-w-2xl mb-12 animate-in slide-in-from-bottom-8 fade-in duration-700 delay-200">
+            Track your applications and get incredibly detailed, actionable feedback designed to beat Applicant Tracking Systems.
+          </p>
+
+          {/* Auth-aware CTA */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 animate-in slide-in-from-bottom-10 fade-in duration-700 delay-300">
+            {isLoading ? (
+              <div className="h-16 w-60 rounded-full bg-slate-200/50 animate-pulse" />
+            ) : auth.isAuthenticated ? (
+              <Link
+                to="/upload"
+                className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-[#0f172a] rounded-full hover:bg-[#1e293b] hover:shadow-[0_8px_30px_rgba(15,23,42,0.3)] hover:-translate-y-1"
+                style={{ textDecoration: "none" }}
+              >
+                Upload New Resume
+                <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
+            ) : (
               <button
                 onClick={() => auth.signIn()}
-                className="flex items-center gap-2 px-8 py-4 rounded-full text-lg font-semibold cursor-pointer transition-all duration-200"
-                style={{
-                  background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
-                  color: "#fff",
-                  boxShadow: "0 4px 20px rgba(99,102,241,0.4)",
-                  border: "none",
-                }}
+                className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 rounded-full bg-gradient-to-r from-[#6366f1] to-[#8b5cf6] hover:shadow-[0_12px_40px_-8px_rgba(99,102,241,0.6)] hover:-translate-y-1 border-none cursor-pointer"
               >
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                  <path d="M12 2a4 4 0 110 8 4 4 0 010-8zM2 16c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
                 Sign In to Get Started
+                <svg className="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
               </button>
-            </>
-          )}
-        </div>
-
-        {/* Logged-in user badge */}
-        {!isLoading && auth.isAuthenticated && (
-          <div
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium animate-in fade-in duration-500"
-            style={{
-              background: "rgba(255,255,255,0.85)",
-              border: "1px solid rgba(99,102,241,0.2)",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-              color: "var(--color-text-secondary)",
-            }}
-          >
-            <span
-              className="flex items-center justify-center rounded-full text-xs font-bold"
-              style={{
-                width: 22,
-                height: 22,
-                background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
-                color: "#fff",
-                flexShrink: 0,
-              }}
-            >
-              {((auth.user as { username?: string })?.username || "U").slice(0, 1).toUpperCase()}
-            </span>
-            <span>
-              Welcome back,{" "}
-              <strong style={{ color: "var(--color-text-primary)" }}>
-                {(auth.user as { username?: string })?.username || "there"}
-              </strong>
-            </span>
+            )}
           </div>
-        )}
-      </section>
 
-      {/* Resumes grid — shown only when authenticated */}
-      {!isLoading && auth.isAuthenticated && resumes.length > 0 && (
-        <section className="resumes-container">
-          <div className="resumes-section">
-            {resumes.map((resume) => (
-              <ResumeCard key={resume.id} resume={resume} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Guest prompt card — shown when not authenticated */}
-      {!isLoading && !auth.isAuthenticated && (
-        <section className="resumes-container">
-          <div
-            className="mx-auto max-w-lg rounded-2xl px-8 py-10 text-center"
-            style={{
-              background: "rgba(255,255,255,0.85)",
-              backdropFilter: "blur(12px)",
-              border: "1px solid rgba(99,102,241,0.15)",
-              boxShadow: "0 8px 32px rgba(99,102,241,0.10)",
-            }}
-          >
-            <div
-              className="mx-auto mb-4 flex items-center justify-center rounded-2xl"
-              style={{
-                width: 56,
-                height: 56,
-                background: "linear-gradient(135deg,#eef2ff,#f5f3ff)",
-                border: "1px solid rgba(99,102,241,0.2)",
-              }}
-            >
-              <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-                <path d="M13 3a5 5 0 110 10A5 5 0 0113 3zM3 23c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+          {/* Logged-in user greeting */}
+          {!isLoading && auth.isAuthenticated && (
+            <div className="mt-8 flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/60 backdrop-blur-md border border-white/80 shadow-[0_4px_16px_rgba(0,0,0,0.03)] animate-in fade-in duration-700 delay-500">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#6366f1] to-[#8b5cf6] text-white font-bold text-sm shadow-sm ring-2 ring-white">
+                {((auth.user as { username?: string })?.username || "U").slice(0, 1).toUpperCase()}
+              </div>
+              <span className="text-sm font-medium text-[#475569]">
+                Welcome back, <strong className="text-[#0f172a] font-semibold">{(auth.user as { username?: string })?.username || "there"}</strong>
+              </span>
             </div>
-            <h3
-              className="text-xl font-bold mb-2"
-              style={{ color: "var(--color-text-primary)" }}
-            >
-              Sign in to see your resumes
-            </h3>
-            <p
-              className="text-sm mb-6 leading-relaxed"
-              style={{ color: "var(--color-text-secondary)" }}
-            >
-              Your resume history and AI analysis results are saved to your account. Sign in to access them.
-            </p>
-            <button
-              onClick={() => auth.signIn()}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold cursor-pointer transition-all duration-200"
-              style={{
-                background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
-                color: "#fff",
-                border: "none",
-                boxShadow: "0 3px 12px rgba(99,102,241,0.35)",
-              }}
-            >
-              Sign In with Puter
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          </div>
+          )}
         </section>
-      )}
+
+        {/* Resumes Grid / Guest Empty State */}
+        <div className="flex-1 w-full max-w-[1500px] mx-auto px-6 sm:px-10 pb-24">
+          {!isLoading && auth.isAuthenticated && resumes.length > 0 ? (
+            <div className="flex flex-col gap-6 animate-in fade-in duration-1000 delay-300">
+              <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-4 mb-4">
+                <h3 className="text-2xl font-bold text-[#0f172a]">Your Resumes</h3>
+                <span className="text-sm font-medium text-[#64748b] bg-[#f1f5f9] px-3 py-1 rounded-full">{resumes.length} saved</span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full">
+                {resumes.map((resume) => (
+                  <ResumeCard key={resume.id} resume={resume} />
+                ))}
+              </div>
+            </div>
+          ) : !isLoading && !auth.isAuthenticated ? (
+            <div className="flex justify-center max-w-2xl mx-auto animate-in slide-in-from-bottom-8 fade-in duration-700 delay-400">
+              <div className="w-full relative group">
+                {/* Decorative background glow for empty state */}
+                <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-[#6366f1] to-[#d946ef] opacity-20 blur-xl group-hover:opacity-30 transition duration-1000"></div>
+                
+                <div className="relative bg-white/80 backdrop-blur-xl rounded-3xl p-10 sm:p-14 text-center border border-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] text-[#0f172a]">
+                  <div className="mx-auto mb-6 flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] shadow-inner border border-[#e2e8f0]">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="text-[#6366f1]">
+                      <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-3 tracking-tight">
+                    Sign in to view history
+                  </h3>
+                  <p className="text-[#64748b] text-lg mb-8 max-w-md mx-auto leading-relaxed">
+                    Your previous AI analysis results, parsed ATS scores, and resume versions are securely saved to your account.
+                  </p>
+                  <button
+                    onClick={() => auth.signIn()}
+                    className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-semibold bg-[#f1f5f9] text-[#0f172a] hover:bg-[#e2e8f0] transition-colors duration-200 cursor-pointer border-none"
+                  >
+                    Authenticate with Puter
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </div>
     </main>
   );
 }

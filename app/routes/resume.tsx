@@ -262,7 +262,7 @@ const Resume =() => {
 
                 {/* RIGHT: Review panel */}
                 <section className="w-1/2 max-lg:w-full review-scroll-panel max-lg:h-auto">
-                    <div className="px-6 lg:px-10 py-8 flex flex-col gap-6 max-w-2xl mx-auto">
+                    <div className="px-4 sm:px-6 lg:px-10 py-8 flex flex-col gap-6 max-w-2xl mx-auto">
                         {/* Header */}
                         <div className="flex flex-col gap-1">
                             <h2 className="review-page-title">Resume Review</h2>
@@ -273,7 +273,7 @@ const Resume =() => {
 
                         {/* Feedback content */}
                         {feedback ? (
-                            <div className="flex flex-col gap-5 animate-in fade-in duration-500">
+                            <div className="flex flex-col gap-4 animate-in fade-in duration-500">
                                 <Summary feedback={feedback} />
                                 <ATS score={feedback.ATS.score} suggestions={feedback.ATS.tips} />
                                 <Details feedback={feedback} />

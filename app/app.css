@@ -253,6 +253,21 @@ form {
   }
 }
 
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@utility animate-pulse-slow {
+  animation: pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
 /* =============================================
    RESUME PAGE — PREMIUM REDESIGN
    ============================================= */
@@ -264,6 +279,12 @@ form {
   border-radius: 20px;
   padding: 24px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(99,102,241,0.06);
+}
+@media (max-width: 640px) {
+  .resume-score-card {
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
 }
 
 /* Category row in Summary */
@@ -281,6 +302,12 @@ form {
 .category-row:hover {
   box-shadow: 0 4px 16px rgba(99,102,241,0.10);
   transform: translateY(-1px);
+}
+@media (max-width: 640px) {
+  .category-row {
+    padding: 12px 14px;
+    border-radius: 12px;
+  }
 }
 
 /* ATS card */
@@ -310,6 +337,12 @@ form {
   letter-spacing: 0.5px;
   flex-shrink: 0;
 }
+@media (max-width: 640px) {
+  .ats-card {
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+}
 
 /* Accordion redesign */
 .accordion-item {
@@ -337,6 +370,11 @@ form {
 }
 .accordion-header-btn:hover {
   background: var(--color-surface-2);
+}
+@media (max-width: 640px) {
+  .accordion-header-btn {
+    padding: 16px;
+  }
 }
 
 /* Tip chips grid */
@@ -426,11 +464,13 @@ form {
   position: sticky;
   top: 56px;
   height: calc(100vh - 56px);
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  scrollbar-width: none;
 }
+.resume-preview-panel::-webkit-scrollbar { display: none; }
 
 /* Resume review right panel scrollable */
 .review-scroll-panel {
@@ -443,11 +483,31 @@ form {
 .review-scroll-panel::-webkit-scrollbar { width: 6px; }
 .review-scroll-panel::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 99px; }
 
+/* Mobile overrides — below lg breakpoint panels stack, heights must be auto */
+@media (max-width: 1023px) {
+  .resume-preview-panel {
+    position: static;
+    height: auto;
+    min-height: 280px;
+    padding: 24px 16px;
+  }
+  .review-scroll-panel {
+    height: auto;
+    overflow-y: visible;
+  }
+}
+
 /* Resume image wrapper */
 .resume-img-wrapper {
   width: 100%;
   max-width: 480px;
-  padding: 20px;
+  padding: 32px;
+}
+@media (max-width: 1023px) {
+  .resume-img-wrapper {
+    padding: 16px;
+    max-width: 360px;
+  }
 }
 
 /* Page section title */
