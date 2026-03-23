@@ -1,7 +1,50 @@
 import { Link } from "react-router";
 import ScoreCircle from "./Score-cricle";
+import { useEffect, useState } from "react";
+import { usePuterStore } from "../lib/puter";
+import resume from "~/routes/resume";
+
+
 
 const ResumeCard = ({ resume: { id, companyName, jobTitle, feedback, imagePath } }: { resume: Resume }) => {
+    const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+    const { fs, isLoading, auth } = usePuterStore();
+  
+    useEffect(() =>{
+        let objectUrl: string | null = null;
+        let isMounted = true;
+
+        const loadResume = async () => {
+             if (!imagePath) return;
+
+             if (auth.isAuthenticated && fs && !imagePath.startsWith('data:')) {
+                 try {
+                     const blob = await fs.read(imagePath);
+                     if (blob && isMounted) {
+                         objectUrl = URL.createObjectURL(blob);
+                         setResumeUrl(objectUrl);
+                         return;
+                     }
+                 } catch(err) {
+                    // It's likely a static mock image path, fallback gracefully
+                 }
+             }
+             
+             // Fallback for mock assets or failed reads
+             if (isMounted) {
+                 setResumeUrl(imagePath);
+             }
+        };
+
+        loadResume();
+        
+        return () => {
+            isMounted = false;
+            if (objectUrl) URL.revokeObjectURL(objectUrl);
+        }
+    }, [imagePath, auth.isAuthenticated, fs]);
+
+    const displayImage = resumeUrl || imagePath;
     return (
         <Link 
             to={`/resume/${id}`}  
@@ -41,7 +84,7 @@ const ResumeCard = ({ resume: { id, companyName, jobTitle, feedback, imagePath }
                     
                     <div className="relative w-full h-full rounded-xl overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.1)] border border-[#e2e8f0] transition-transform duration-700 ease-out group-hover:scale-[1.03]">
                         <img 
-                            src={imagePath} 
+                            src={displayImage} 
                             alt={`${companyName} Resume`} 
                             className="w-full h-full object-cover object-top" 
                         />

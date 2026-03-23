@@ -1,9 +1,24 @@
 import type { Route } from "./+types/home";
 import NavBar from "~/components/Nav-bar";
 import ResumeCard from "~/components/Resume-card";
-import { resumes } from "../../constants";
+import { resumes as mockResumes } from "../../constants";
 import { usePuterStore } from "~/lib/puter";
 import { Link } from "react-router";
+import { useEffect, useState } from "react";
+
+// Feedback Parsing Helper from resume.tsx
+const parseFeedback = (value: unknown): any | null => {
+    if (!value) return null;
+    let parsed: unknown = value;
+    for (let i = 0; i < 2; i++) {
+        if (typeof parsed !== "string") break;
+        try { parsed = JSON.parse(parsed); } catch { break; }
+    }
+    if (!parsed || typeof parsed !== "object") return null;
+    const candidate = parsed as any;
+    if (!candidate.ATS || typeof candidate.ATS.score !== "number") return null;
+    return candidate;
+};
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -13,7 +28,49 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const { isLoading, auth } = usePuterStore();
+  const { fs, kv, isLoading, auth } = usePuterStore();
+  const [userResumes, setUserResumes] = useState<any[]>([]);
+  const [isFetchingResumes, setIsFetchingResumes] = useState(false);
+
+  useEffect(() => {
+    const fetchUserResumes = async () => {
+      if (!auth.isAuthenticated || !kv) return;
+      setIsFetchingResumes(true);
+      try {
+        const keys = await kv.list("resume-analysis-*");
+        if (keys && Array.isArray(keys)) {
+          const items = await Promise.all(keys.map(k => kv.get(k as string)));
+          const parsedResumes = items.map(item => {
+            if (!item) return null;
+            try {
+              const data = JSON.parse(item as string);
+              return {
+                id: data.id,
+                companyName: data.companyName || "Unknown Company",
+                jobTitle: data.jobTitle || "Unknown Role",
+                imagePath: data.resumeImagePath || "",
+                resumePath: data.resumePath || "",
+                feedback: parseFeedback(data.feedback)
+              };
+            } catch (e) {
+              return null;
+            }
+          }).filter(r => r !== null && r.feedback !== null);
+          
+          setUserResumes(parsedResumes);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user resumes", err);
+      } finally {
+        setIsFetchingResumes(false);
+      }
+    };
+
+    fetchUserResumes();
+  }, [auth.isAuthenticated, kv]);
+
+  // Use real user resumes if available, otherwise fallback to mock data
+  const resumesToDisplay = userResumes.length > 0 ? userResumes : mockResumes;
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#fafafa]">
@@ -92,18 +149,28 @@ export default function Home() {
         </section>
 
         {/* Resumes Grid / Guest Empty State */}
-        <div className="flex-1 w-full max-w-[1500px] mx-auto px-6 sm:px-10 pb-24">
-          {!isLoading && auth.isAuthenticated && resumes.length > 0 ? (
+        <div className="flex-1 w-full max-w-[1500px] mx-auto xl:px-8 px-6 pb-24">
+          {!isLoading && auth.isAuthenticated ? (
             <div className="flex flex-col gap-6 animate-in fade-in duration-1000 delay-300">
-              <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-4 mb-4">
-                <h3 className="text-2xl font-bold text-[#0f172a]">Your Resumes</h3>
-                <span className="text-sm font-medium text-[#64748b] bg-[#f1f5f9] px-3 py-1 rounded-full">{resumes.length} saved</span>
+              <div className="flex items-center justify-between border-b border-[#e2e8f0] pb-4 mb-4 mt-8">
+                <h3 className="text-2xl font-bold text-[#0f172a] flex items-center gap-3">
+                  Your Resumes 
+                  {userResumes.length === 0 && <span className="text-sm font-medium text-[#f59e0b] bg-[#fef3c7] px-2.5 py-0.5 rounded-full border border-[#fcd34d]">Demo Data</span>}
+                </h3>
+                <span className="text-sm font-medium text-[#64748b] bg-[#f1f5f9] px-3 py-1 rounded-full">{resumesToDisplay.length} saved</span>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full">
-                {resumes.map((resume) => (
-                  <ResumeCard key={resume.id} resume={resume} />
-                ))}
-              </div>
+              
+              {isFetchingResumes ? (
+                <div className="flex justify-center py-12">
+                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6366f1]"></div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full">
+                  {resumesToDisplay.map((resume: any) => (
+                    <ResumeCard key={resume.id} resume={resume} />
+                  ))}
+                </div>
+              )}
             </div>
           ) : !isLoading && !auth.isAuthenticated ? (
             <div className="flex justify-center max-w-2xl mx-auto animate-in slide-in-from-bottom-8 fade-in duration-700 delay-400">
