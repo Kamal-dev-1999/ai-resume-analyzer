@@ -28,9 +28,10 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const { fs, kv, isLoading, auth } = usePuterStore();
+  const { kv, isLoading, auth } = usePuterStore();
   const [userResumes, setUserResumes] = useState<any[]>([]);
   const [isFetchingResumes, setIsFetchingResumes] = useState(false);
+
 
   useEffect(() => {
     const fetchUserResumes = async () => {
@@ -205,3 +206,15 @@ export default function Home() {
     </main>
   );
 }
+
+
+
+
+// export const Page = () => {
+//   const [page, setPage] = useState("/home");
+
+//   return (
+//     <>
+//     </>
+//   );
+// };

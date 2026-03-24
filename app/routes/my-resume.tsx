@@ -4,7 +4,7 @@ import { usePuterStore } from "../lib/puter";
 // import  { resume }  from "../../constants";
 import ResumeCard from "~/components/Resume-card";
 import NavBar from "~/components/Nav-bar";
-
+import Page from "./home"
 
 const parseFeedback = (value: unknown): any | null => {
   if (!value) return null;
@@ -24,6 +24,7 @@ const MyResume = () => {
   const [userResumes, setUserResumes] = useState<any[]>([]);
   const [isFetchingResumes, setIsFetchingResumes] = useState(false);
   const resumesToDisplay = userResumes.length > 0 ? userResumes : [];
+
 
   useEffect(() => {
     const fetchUserResumes = async () => {

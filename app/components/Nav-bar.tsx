@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { usePuterStore } from "~/lib/puter";
 
 const NavBar: React.FC = () => {
   const { auth, isLoading } = usePuterStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const isOnMyResumesPage = location.pathname === "/my-resumes";
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -162,19 +164,48 @@ const NavBar: React.FC = () => {
                       Upload New Resume
                     </Link>
 
+                  {isOnMyResumesPage ? (
+                    <Link
+                    to="/"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors duration-150"
+                      style={{ color: "var(--color-text-secondary)", textDecoration: "none", display: "flex" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "var(--color-surface-2)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                    >
+                      <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                        <path
+                          d="M1.5 5.5l6-4 6 4M2.5 5.5V13h4V9.5h2V13h4V5.5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      Return Home
+                    </Link>
+                  ) : (
                     <Link
                       to="/my-resumes"
                       onClick={() => setDropdownOpen(false)}
                       className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors duration-150"
                       style={{ color: "var(--color-text-secondary)", textDecoration: "none", display: "flex" }}
-                      onMouseEnter={e => (e.currentTarget.style.background = "var(--color-surface-2)")}
-                      onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "var(--color-surface-2)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                     >
                       <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                        <path d="M1.5 5.5l6-4 6 4M2.5 5.5V13h4V9.5h2V13h4V5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path
+                          d="M1.5 5.5l6-4 6 4M2.5 5.5V13h4V9.5h2V13h4V5.5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                       My Resumes
                     </Link>
+                  )}
+                                      
                   </div>
 
                   {/* Divider + Sign out */}
