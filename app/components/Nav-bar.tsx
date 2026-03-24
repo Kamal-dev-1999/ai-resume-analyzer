@@ -163,7 +163,7 @@ const NavBar: React.FC = () => {
                     </Link>
 
                     <Link
-                      to="/"
+                      to="/my-resumes"
                       onClick={() => setDropdownOpen(false)}
                       className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors duration-150"
                       style={{ color: "var(--color-text-secondary)", textDecoration: "none", display: "flex" }}

@@ -1,0 +1,101 @@
+// CODE SNIPPET FOR: app/routes/my-resume.tsx
+// This snippet fetches all your uploaded resumes from Puter KV,
+// extracts the 'resumeImagePath', and fetches them using fs.read() to display.
+
+import React, { useState, useEffect } from "react";
+import { usePuterStore } from "../lib/puter";
+
+const MyResume = () => {
+    const { fs, kv, auth, isLoading } = usePuterStore();
+    
+    // We will store arrays of object URLs here
+    const [resumeImages, setResumeImages] = useState<{id: string, url: string}[]>([]);
+    const [isFetching, setIsFetching] = useState(false);
+
+    useEffect(() => {
+        let objectUrls: string[] = []; // Keep track of URLs to cleanup later
+
+        const fetchUploadedImages = async () => {
+            if (!auth.isAuthenticated || !kv || !fs) return;
+            setIsFetching(true);
+
+            try {
+                // 1. Fetch all resume keys saved to your account
+                const keys = await kv.list("resume-analysis-*");
+                if (keys && Array.isArray(keys)) {
+                    
+                    // 2. Fetch the JSON data for each key
+                    const items = await Promise.all(keys.map(k => kv.get(k as string)));
+                    
+                    // 3. Extract the 'resumeImagePath' from each JSON
+                    const imagePaths = items.map(item => {
+                        if (!item) return null;
+                        try {
+                            const data = JSON.parse(item as string);
+                            return { id: data.id, path: data.resumeImagePath };
+                        } catch(e) { return null; }
+                    }).filter(Boolean);
+
+                    // 4. Fetch the actual image files from Puter FS using auth
+                    const loadedImages = await Promise.all(
+                        imagePaths.map(async (img) => {
+                            if (!img || !img.path) return null;
+                            try {
+                                const blob = await fs.read(img.path);
+                                if (!blob) return null;
+                                
+                                const url = URL.createObjectURL(blob);
+                                objectUrls.push(url); // Save for cleanup
+                                
+                                return { id: img.id, url: url };
+                            } catch (e) {
+                                console.error("Failed to load fs image:", e);
+                                return null;
+                            }
+                        })
+                    );
+
+                    // 5. Save the valid generated URLs to state
+                    setResumeImages(loadedImages.filter(img => img !== null) as {id: string, url: string}[]);
+                }
+            } catch (err) {
+                console.error("Failed to fetch resumes", err);
+            } finally {
+                setIsFetching(false);
+            }
+        };
+
+        fetchUploadedImages();
+
+        // 6. Cleanup function prevents memory leaks
+        return () => {
+            objectUrls.forEach(url => URL.revokeObjectURL(url));
+        };
+    }, [auth.isAuthenticated, kv, fs]);
+
+    return (
+        <main className="p-10 max-w-7xl mx-auto">
+            <h1 className="text-3xl font-bold mb-8">My Raw Resume Images</h1>
+            
+            {isFetching ? (
+                <p>Loading your uploaded resumes from PuterFS...</p>
+            ) : resumeImages.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {resumeImages.map((img) => (
+                        <div key={img.id} className="border p-2 rounded-xl shadow-lg">
+                            <img 
+                                src={img.url} 
+                                alt="My Uploaded Resume" 
+                                className="w-full h-auto rounded-lg object-contain bg-slate-50"
+                            />
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p className="text-gray-500">No custom resumes uploaded to PuterFS yet. Upload one via the Home page!</p>
+            )}
+        </main>
+    );
+}
+
+export default MyResume;
